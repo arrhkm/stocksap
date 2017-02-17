@@ -37,6 +37,13 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
+            ['label' => 'Transaction WH', 'url' => ['/transwh/index']],
+            ['label' => 'Master Data', 'url' => ['#'], 'items'=>[
+                ['label' => 'Master Item', 'url' => ['/item/']],
+                ['label' => 'Master Project', 'url' => ['/project/']],
+                ['label' => 'Master Project Sub', 'url' => ['/projectsub/']],
+                
+            ]],
             ['label' => 'About', 'url' => ['/site/about']],
             ['label' => 'Contact', 'url' => ['/site/contact']],
             Yii::$app->user->isGuest ? (
