@@ -3,23 +3,26 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Projectsub;
-use app\models\ProjectsubSearch;
+use app\models\TransWh;
+use app\models\TransWhSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
-use app\models\Project;
+use app\models\Transcode;
+use app\models\Item;
+use app\models\Projectsub;
 use yii\helpers\ArrayHelper;
-
 /**
- * ProjectsubController implements the CRUD actions for Projectsub model.
+ * TranswhController implements the CRUD actions for TransWh model.
  */
-class ProjectsubController extends Controller
+class TranswhController extends Controller
 {
     /**
      * @inheritdoc
      */
+   
+    
     public function behaviors()
     {
         return [
@@ -29,29 +32,27 @@ class ProjectsubController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            
         ];
     }
 
     /**
-     * Lists all Projectsub models.
+     * Lists all TransWh models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new ProjectsubSearch();
+        $searchModel = new TransWhSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
-        $model2 = new Projectsub;
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'model2'=>$model2,
         ]);
     }
 
     /**
-     * Displays a single Projectsub model.
+     * Displays a single TransWh model.
      * @param integer $id
      * @return mixed
      */
@@ -63,26 +64,34 @@ class ProjectsubController extends Controller
     }
 
     /**
-     * Creates a new Projectsub model.
+     * Creates a new TransWh model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Projectsub();
-        $project = ArrayHelper::map(Project::find()->all(), 'id', 'project_number','project_dscription');
+        $model = new TransWh();
+        
+        $projectsub = ArrayHelper::map(Projectsub::find()->from('projectsub as a')
+                ->innerJoin('project as b', 'b.id = a.project_id')->all(), 'id', 'projectsub_dscription');
+        
+        $list_transcode = arrayHelper::map(Transcode::find()->all(), 'id', 'transcode_name');
+        $items = ArrayHelper::map(Item::find()->all(), 'id', 'item_name');
+        $model->date_create = date('Y-m-d');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'list_project'=>$project,
+                'list_transcode'=>$list_transcode,
+                'projectsub'=>$projectsub,
+                'items'=> $items,
             ]);
         }
     }
 
     /**
-     * Updates an existing Projectsub model.
+     * Updates an existing TransWh model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -91,20 +100,28 @@ class ProjectsubController extends Controller
     {
         $model = $this->findModel($id);
         
-        $project = ArrayHelper::map(Project::find()->all(), 'id', 'project_number','project_dscription');
+        
+        $projectsub = ArrayHelper::map(Projectsub::find()
+            ->from('projectsub as a')
+            ->innerJoin('project as b', 'b.id = a.project_id')
+            ->all(), 'id', 'projectsub_dscription');
+        
+        $list_transcode = arrayHelper::map(Transcode::find()->all(), 'id', 'transcode_name');
+        $items = ArrayHelper::map(Item::find()->all(), 'id', 'item_name');
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'list_project'=>$project,
-                
+                'list_transcode'=>$list_transcode,
+                'projectsub'=>$projectsub,
+                'items'=> $items,
             ]);
         }
     }
 
     /**
-     * Deletes an existing Projectsub model.
+     * Deletes an existing TransWh model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -117,15 +134,15 @@ class ProjectsubController extends Controller
     }
 
     /**
-     * Finds the Projectsub model based on its primary key value.
+     * Finds the TransWh model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Projectsub the loaded model
+     * @return TransWh the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Projectsub::findOne($id)) !== null) {
+        if (($model = TransWh::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

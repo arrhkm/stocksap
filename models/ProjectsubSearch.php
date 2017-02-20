@@ -15,11 +15,12 @@ class ProjectsubSearch extends Projectsub
     /**
      * @inheritdoc
      */
+    public $project_number;
     public function rules()
     {
         return [
             [['id', 'projectsub_number', 'project_id'], 'integer'],
-            [['projectsub_dscription'], 'safe'],
+            [['projectsub_dscription', 'project_dscription', 'project_number'], 'safe'],
         ];
     }
 
@@ -41,7 +42,8 @@ class ProjectsubSearch extends Projectsub
      */
     public function search($params)
     {
-        $query = Projectsub::find();
+        $query = Projectsub::find()->from('projectsub as a')
+                ->innerJoin('project as b', 'b.id = a.project_id');
 
         // add conditions that should always apply here
 
@@ -62,9 +64,11 @@ class ProjectsubSearch extends Projectsub
             'id' => $this->id,
             'projectsub_number' => $this->projectsub_number,
             'project_id' => $this->project_id,
+            
         ]);
 
-        $query->andFilterWhere(['like', 'projectsub_dscription', $this->projectsub_dscription]);
+        $query->andFilterWhere(['like', 'projectsub_dscription', $this->projectsub_dscription])
+                ->andFilterWhere(['like', 'b.project_number', $this->project_number]);
 
         return $dataProvider;
     }

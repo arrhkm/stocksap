@@ -20,6 +20,7 @@ class Projectsub extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public $project_dscription;
     public static function tableName()
     {
         return 'projectsub';
@@ -33,7 +34,7 @@ class Projectsub extends \yii\db\ActiveRecord
         return [
             [['projectsub_number'], 'required'],
             [['projectsub_number', 'project_id'], 'integer'],
-            [['projectsub_dscription'], 'string', 'max' => 225],
+            [['projectsub_dscription', 'project_dscription'], 'string', 'max' => 225],
             [['projectsub_number', 'project_id'], 'unique', 'targetAttribute' => ['projectsub_number', 'project_id']],
             [['project_id'], 'exist', 'skipOnError' => true, 'targetClass' => Project::className(), 'targetAttribute' => ['project_id' => 'id']],
         ];
