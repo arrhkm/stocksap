@@ -13,6 +13,7 @@ use app\models\Transcode;
 use app\models\Item;
 use app\models\Projectsub;
 use yii\helpers\ArrayHelper;
+use app\models\TransWhSearchByItemcode;
 /**
  * TranswhController implements the CRUD actions for TransWh model.
  */
@@ -46,6 +47,17 @@ class TranswhController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+    
+    public function actionIndex2()
+    {
+        $searchModel = new TransWhSearchByItemcode();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index2', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

@@ -31,8 +31,13 @@ use kartik\widgets\Select2;
 
     <?php //= $form->field($model, 'item_id')->textInput() ?>
     <?= $form->field($model, 'item_id')->widget(\kartik\select2\Select2::className(), [
+        'name'=>'item',
         'data'=>$items,
-        
+        'size' => Select2::SMALL,
+        'options' => ['placeholder' => 'Select a Item  ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
     ])?>
 
     <?php //= $form->field($model, 'projectsub_id')->textInput() ?>

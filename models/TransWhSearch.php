@@ -46,7 +46,7 @@ class TransWhSearch extends TransWh
      */
     public function search($params)
     {
-        $query = TransWh::find()->with('projectsub')->from('trans_wh as a')
+        $query = TransWh::find()->with('projectsub', 'item')->from('trans_wh as a')
             ->innerJoin('projectsub as b', 'b.id = a.projectsub_id');
 
         // add conditions that should always apply here

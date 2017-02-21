@@ -46,6 +46,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Pjax::end(); ?>
 </div>
 <?php 
-$modelx =Projectsub::find()->where(['id'=>1])->one();
-echo $modelx->project->project_dscription;
+//$modelx =Projectsub::find()->where(['id'=>1])->one();
+//echo $modelx->project->project_dscription;
 ?>

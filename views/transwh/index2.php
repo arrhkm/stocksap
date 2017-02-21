@@ -7,7 +7,8 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\models\TransWhSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Trans Whs');
+
+$this->title = Yii::t('app', 'Transaction WH By Itemcode');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="trans-wh-index">
@@ -17,8 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Trans Wh'), ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Yii::t('app', 'View By Itemcode'), ['index2'], ['class' => 'btn btn-success']) ?>
+        <?php //= Html::a(Yii::t('app', 'Create Trans Wh'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Back to Transaction'), ['index'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -27,34 +28,39 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            //'id',
-            'date_create',
-            'trans_code',
-            'trans_qty',
-            'po_number',
+            'id',
+            //'date_create',
+            //'trans_code',
+            //'trans_qty',
+            //'po_number',
             //'location',
             //'name_user_take',
             //'from_to',
-            'grpo_number',
-            'item_id',
-            'item.itemcode',
-            'item.item_name',
-            'projectsub_id',
+            //'grpo_number',
+            //'item_id',
+            'itemcode',
+            'item_name',
+            //'projectsub_id',
             //[
             //  'attribute'=> 'projectsub_id',
             //  'value'=>'projectsub.projectsub_dscription',
             //],
-            [
-                'attribute'=>'Fase',                    
-                'value'=>function($model){
-                    return $model->projectsub->projectsub_dscription;        
-                },
+            
+            //[
+            //    'attribute'=>'Fase',                    
+            //    'value'=>function($model){
+            //        return $model->projectsub->projectsub_dscription;        
+            //    },
                 
-            ],
-            [
-                'attribute'=>'projectsub.project.project_number',
-            ],
+            //],
+            //[
+            //    'attribute'=>'projectsub.project.project_number',
+            //],
             //'projectsub_dscription',
+            'receive',
+            'issued', 
+            'saldo', 
+            
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

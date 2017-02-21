@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+//use kartik\
 
 /* @var $this yii\web\View */
 /* @var $model app\models\TransWh */
@@ -37,8 +38,32 @@ $this->params['breadcrumbs'][] = $this->title;
             'name_user_take',
             'from_to',
             'grpo_number',
-            'item_id',
-            'projectsub_id',
+            //'item_id',
+            [                      // the owner name of the model
+                'label' => 'Item name',
+                'value' => $model->item->item_name,
+            ],
+            [                      // the owner name of the model
+                'label' => 'Item code',
+                'value' => $model->item->itemcode,
+            ],
+            //'projectsub_id', 
+            [                      // the owner name of the model
+                'label' => 'Project Number',
+                'value' => $model->projectsub->project->project_number,
+            ],
+            [                      // the owner name of the model
+                'label' => 'Project name',
+                'value' => $model->projectsub->project->project_dscription,
+            ],
+            [                      // the owner name of the model
+                'label' => 'Projectsub / Fase',
+                'value' => $model->projectsub->projectsub_dscription,
+            ],
+            
+           
+            
+            
         ],
     ]) ?>
 
