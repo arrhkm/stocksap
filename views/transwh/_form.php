@@ -24,7 +24,11 @@ use kartik\widgets\Select2;
     ?>
     <?= $form->field($model, 'trans_code')->widget(Select2::className(),[
             'data'=> $list_transcode,
-           
+            'size' => Select2::SMALL,
+            'options' => ['placeholder' => 'Select a code  ...'],
+            'pluginOptions' => [
+                'allowClear' => true
+            ],
     ]);?>
 
     <?= $form->field($model, 'trans_qty')->textInput() ?>

@@ -54,10 +54,8 @@ class TransWhSearchByItemcode extends TransWh
                 , 'item_name'
                 , 'item_id',
             ])
-            //->select('a.id' ,'b.item_name', 'b.item_uom')
             ->alias('a')
             ->with('item')            
-            //->from('trans_wh as a')
             ->innerJoin('item as b', 'b.id = a.item_id')
             ->groupBy('a.item_id');
 

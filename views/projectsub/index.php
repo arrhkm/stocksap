@@ -34,9 +34,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>'project.project_number',
                   
             ],
-            'projectsub_number',
-            'projectsub_dscription',
             'project_id',
+            //'project.project_number',
+            'projectsub_number',
+            'projectsub_number_id',
+            'projectsub_dscription',
+            
             
             'project.project_dscription',
 

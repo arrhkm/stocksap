@@ -23,7 +23,7 @@ class TransWhSearch extends TransWh
         return [
             [['id', 'trans_code', 'trans_qty', 'item_id', 'projectsub_id'], 'integer'],           
             [['date_create', 'po_number', 'location', 
-                'name_user_take', 'from_to', 'grpo_number'], 'safe'],
+                'name_user_take', 'from_to', 'grpo_number', 'itemcode', 'item_name', 'projectsub_number_id'], 'safe'],
             [['projectsub_dscription'],'string'],
         ];
     }
@@ -46,8 +46,12 @@ class TransWhSearch extends TransWh
      */
     public function search($params)
     {
-        $query = TransWh::find()->with('projectsub', 'item')->from('trans_wh as a')
-            ->innerJoin('projectsub as b', 'b.id = a.projectsub_id');
+        $query = TransWh::find()
+            ->select(['a.*', 'c.item_name', 'c.itemcode', 'b.projectsub_number_id'])
+            ->alias('a')
+            ->with('projectsub', 'item')
+            ->innerJoin('projectsub as b', 'b.id = a.projectsub_id')
+            ->innerJoin('item as c', 'c.id = a.item_id');
 
         // add conditions that should always apply here
 
@@ -78,7 +82,10 @@ class TransWhSearch extends TransWh
             ->andFilterWhere(['like', 'name_user_take', $this->name_user_take])
             ->andFilterWhere(['like', 'from_to', $this->from_to])
             ->andFilterWhere(['like', 'grpo_number', $this->grpo_number])
-            ->andFilterWhere(['like', 'projectsub_dscription', $this->projectsub_dscription]);
+            ->andFilterWhere(['like', 'projectsub_dscription', $this->projectsub_dscription])
+            ->andFilterWhere(['like', 'item_name', $this->item_name])
+            ->andFilterWhere(['like', 'itemcode', $this->itemcode])
+            ->andFilterWhere(['like', 'projectsub_number_id', $this->projectsub_number_id]);
 
         return $dataProvider;
     }

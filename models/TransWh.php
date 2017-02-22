@@ -33,6 +33,7 @@ class TransWh extends \yii\db\ActiveRecord
     public $issued;
     public $saldo;
     public $item_name;
+    public $projectsub_number_id;
     public static function tableName()
     {
         return 'trans_wh';
@@ -64,13 +65,13 @@ class TransWh extends \yii\db\ActiveRecord
             'date_create' => Yii::t('app', 'Date Create'),
             'trans_code' => Yii::t('app', 'Trans Code'),
             'trans_qty' => Yii::t('app', 'Trans Qty'),
-            'po_number' => Yii::t('app', 'Po Number'),
+            'po_number' => Yii::t('app', 'PO./BBM/S.JLN'),
             'location' => Yii::t('app', 'Location'),
             'name_user_take' => Yii::t('app', 'Name User Take'),
             'from_to' => Yii::t('app', 'From To'),
             'grpo_number' => Yii::t('app', 'Grpo Number'),
-            'item_id' => Yii::t('app', 'Item ID'),
-            'projectsub_id' => Yii::t('app', 'Projectsub ID'),
+            'item_id' => Yii::t('app', 'Item Barang'),
+            'projectsub_id' => Yii::t('app', 'Project/SO.'),
         ];
     }
 
@@ -107,4 +108,7 @@ class TransWh extends \yii\db\ActiveRecord
         }
         return true;
     }
+    
+   
+    
 }

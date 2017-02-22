@@ -71,8 +71,15 @@ class ProjectsubController extends Controller
     {
         $model = new Projectsub();
         $project = ArrayHelper::map(Project::find()->all(), 'id', 'project_number','project_dscription');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $number= $model->projectsub_number;
+            $project = Project::findOne(['id'=>$model->project_id]);
+            $code = $project->project_number;
+            $model->projectsub_number_id="$code-$number";
+            if ($model->save()){
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+            
         } else {
             return $this->render('create', [
                 'model' => $model,

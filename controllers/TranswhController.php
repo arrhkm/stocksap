@@ -14,6 +14,7 @@ use app\models\Item;
 use app\models\Projectsub;
 use yii\helpers\ArrayHelper;
 use app\models\TransWhSearchByItemcode;
+
 /**
  * TranswhController implements the CRUD actions for TransWh model.
  */
@@ -70,8 +71,12 @@ class TranswhController extends Controller
      */
     public function actionView($id)
     {
+        $model = TransWh::find()->where(['id'=>$id])
+                ->with('item', 'projectsub')
+                ->one();
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            //'model' => $this->findModel($id),
+            'model'=>$model,
         ]);
     }
 
@@ -85,13 +90,26 @@ class TranswhController extends Controller
         $model = new TransWh();
         
         $projectsub = ArrayHelper::map(Projectsub::find()->from('projectsub as a')
-                ->innerJoin('project as b', 'b.id = a.project_id')->all(), 'id', 'projectsub_dscription');
+                ->innerJoin('project as b', 'b.id = a.project_id')->all(), 'id', 'projectsub_number_id');
         
         $list_transcode = arrayHelper::map(Transcode::find()->all(), 'id', 'transcode_name');
         $items = ArrayHelper::map(Item::find()->all(), 'id', 'item_name');
         $model->date_create = date('Y-m-d');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if ($this->saldoEmpty($model->item_id, $model->trans_qty, $model->trans_code)){
+                $model->addError('trans_qty', 'Quantity item  is not already (Saldo < Quantity issued) !');
+                //yii::$app->session->setFlash('error', 'Leave Entitlement for this user already input');
+                return $this->render('create', [
+                    'model' => $model,
+                    'list_transcode'=>$list_transcode,
+                    'projectsub'=>$projectsub,
+                    'items'=> $items,
+                ]);
+            }
+            if ($model->save()){
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+                    
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -152,12 +170,36 @@ class TranswhController extends Controller
      * @return TransWh the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
-        if (($model = TransWh::findOne($id)) !== null) {
-            return $model;
+    protected function findModel($id){       
+        
+        if (($model = TransWh::findOne($id)) !== null) {         
+                return $model;
         } else {
-            throw new NotFoundHttpException('The requested page does not exist.');
+                throw new NotFoundHttpException('The requested page does not exist.');
         }
+               
+    }
+    public function saldoEmpty($item_id, $qty, $trans_code){
+        if ($trans_code == 2){
+            
+            $tWh = TransWh::find()
+            ->alias('a')
+            ->select([
+                'saldo'=>'sum(if(a.trans_code=1, a.trans_qty, 0)) - sum(if(a.trans_code=2,a.trans_qty,0))'                    
+                ,'a.trans_code'
+                ,'a.trans_qty'
+            ])
+            ->where(['a.item_id'=>$item_id])
+            ->groupBy('a.item_id')->one();
+            
+            if ($tWh->saldo < $qty){
+                return true;
+            }
+            return false;
+            
+            
+        } 
+        return false;
+        
     }
 }

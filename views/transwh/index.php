@@ -25,38 +25,60 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            [
+                'class' => 'yii\grid\SerialColumn',
+                
+            ],
 
             //'id',
-            'date_create',
-            'trans_code',
-            'trans_qty',
-            'po_number',
+            [
+                'attribute'=>'date_create',
+                'headerOptions' => ['style' => 'width:10%']
+            ],
+            [
+                'attribute'=>'trans_code',
+                'headerOptions' => ['style' => 'width:5%']
+            ],
+            [
+                'attribute'=>'trans_qty',
+                'headerOptions' => ['style' => 'width:5%']
+            ],
+            [
+                'attribute'=>'po_number',
+                'headerOptions' => ['style' => 'width:5%']
+            ],
             //'location',
             //'name_user_take',
             //'from_to',
-            'grpo_number',
-            'item_id',
-            'item.itemcode',
-            'item.item_name',
-            'projectsub_id',
+            [
+                'attribute'=>'grpo_number',
+                'headerOptions' => ['style' => 'width:5%']
+            ],
+            //'item_id',
+            [
+                'attribute'=>'itemcode',
+                'headerOptions' => ['style' => 'width:10%']
+            ],
+            //'item_name',
+            [
+                'attribute'=>'projectsub_number_id',
+                'headerOptions' => ['style' => 'width:10%']
+            ],
             //[
             //  'attribute'=> 'projectsub_id',
             //  'value'=>'projectsub.projectsub_dscription',
             //],
+            
             [
-                'attribute'=>'Fase',                    
-                'value'=>function($model){
-                    return $model->projectsub->projectsub_dscription;        
-                },
+                'attribute'=>'item_name',                    
+                'headerOptions' => ['style' => 'width:30%']
                 
-            ],
-            [
-                'attribute'=>'projectsub.project.project_number',
-            ],
-            //'projectsub_dscription',
+            ],       
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'headerOptions' => ['style' => 'width:10%']
+            ],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
