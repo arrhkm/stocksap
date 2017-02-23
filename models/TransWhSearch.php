@@ -23,7 +23,7 @@ class TransWhSearch extends TransWh
         return [
             [['id', 'trans_code', 'trans_qty', 'item_id', 'projectsub_id'], 'integer'],           
             [['date_create', 'po_number', 'location', 
-                'name_user_take', 'from_to', 'grpo_number', 'itemcode', 'item_name', 'projectsub_number_id'], 'safe'],
+                'name_user_take', 'from_to', 'grpo_number', 'itemcode', 'item_name', 'projectsub_number_id', 't_code'], 'safe'],
             [['projectsub_dscription'],'string'],
         ];
     }
@@ -47,11 +47,15 @@ class TransWhSearch extends TransWh
     public function search($params)
     {
         $query = TransWh::find()
-            ->select(['a.*', 'c.item_name', 'c.itemcode', 'b.projectsub_number_id'])
+            ->select([
+                'a.*', 'c.item_name', 'c.itemcode'
+                ,'b.projectsub_number_id'
+                ,'t_code'=>"if(a.trans_code=1,'IN','OUT')" 
+            ])
             ->alias('a')
             ->with('projectsub', 'item')
             ->innerJoin('projectsub as b', 'b.id = a.projectsub_id')
-            ->innerJoin('item as c', 'c.id = a.item_id');
+            ->innerJoin('item as c', 'c.id = a.item_id')->orderBy('a.date_create');
 
         // add conditions that should always apply here
 
@@ -71,7 +75,7 @@ class TransWhSearch extends TransWh
         $query->andFilterWhere([
             'id' => $this->id,
             'date_create' => $this->date_create,
-            'trans_code' => $this->trans_code,
+            //'trans_code' => $this->trans_code,
             'trans_qty' => $this->trans_qty,
             'item_id' => $this->item_id,
             'projectsub_id' => $this->projectsub_id,
@@ -86,7 +90,12 @@ class TransWhSearch extends TransWh
             ->andFilterWhere(['like', 'item_name', $this->item_name])
             ->andFilterWhere(['like', 'itemcode', $this->itemcode])
             ->andFilterWhere(['like', 'projectsub_number_id', $this->projectsub_number_id]);
-
+        if ($this->t_code== 'IN'){
+            $query->andFilterWhere(['like', 'trans_code', 1]);
+        } elseif ($this->t_code=='OUT') {
+             $query->andFilterWhere(['like', 'trans_code', 2]);
+        } 
+            
         return $dataProvider;
     }
 }

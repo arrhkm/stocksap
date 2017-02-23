@@ -21,7 +21,7 @@ class Projectsub extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public $project_dscription;
+    public $project_dscription;    
     public static function tableName()
     {
         return 'projectsub';

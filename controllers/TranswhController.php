@@ -134,7 +134,7 @@ class TranswhController extends Controller
         $projectsub = ArrayHelper::map(Projectsub::find()
             ->from('projectsub as a')
             ->innerJoin('project as b', 'b.id = a.project_id')
-            ->all(), 'id', 'projectsub_dscription');
+            ->all(), 'id', 'projectsub_number_id');
         
         $list_transcode = arrayHelper::map(Transcode::find()->all(), 'id', 'transcode_name');
         $items = ArrayHelper::map(Item::find()->all(), 'id', 'item_name');

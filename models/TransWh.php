@@ -34,6 +34,7 @@ class TransWh extends \yii\db\ActiveRecord
     public $saldo;
     public $item_name;
     public $projectsub_number_id;
+    public $t_code;
     public static function tableName()
     {
         return 'trans_wh';

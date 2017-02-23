@@ -20,7 +20,7 @@ class ProjectsubSearch extends Projectsub
     {
         return [
             [['id', 'projectsub_number', 'project_id'], 'integer'],
-            [['projectsub_dscription', 'project_dscription', 'project_number'], 'safe'],
+            [['projectsub_dscription', 'project_dscription', 'project_number', 'projectsub_number_id'], 'safe'],
         ];
     }
 
@@ -61,14 +61,15 @@ class ProjectsubSearch extends Projectsub
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'a.id' => $this->id,
             'projectsub_number' => $this->projectsub_number,
             'project_id' => $this->project_id,
             
         ]);
 
         $query->andFilterWhere(['like', 'projectsub_dscription', $this->projectsub_dscription])
-                ->andFilterWhere(['like', 'b.project_number', $this->project_number]);
+                ->andFilterWhere(['like', 'b.project_number', $this->project_number])
+                ->andFilterWhere(['like', 'projectsub_number_id', $this->projectsub_number_id]);
 
         return $dataProvider;
     }

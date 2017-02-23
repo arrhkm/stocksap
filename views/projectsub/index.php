@@ -28,17 +28,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            //'id',
+            'id',
+            
+            'project_id',
+            //'project.project_number',
+            'projectsub_number',
+            'projectsub_number_id',
             [
                 'attribute'=>'Project Number',
                 'value'=>'project.project_number',
                   
             ],
-            'project_id',
-            //'project.project_number',
-            'projectsub_number',
-            'projectsub_number_id',
-            'projectsub_dscription',
+            //'projectsub_dscription',
             
             
             'project.project_dscription',

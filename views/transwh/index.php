@@ -32,11 +32,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
             //'id',
             [
+                'attribute'=>'itemcode',
+                'headerOptions' => ['style' => 'width:10%']
+            ],
+            [
+                'attribute'=>'item_name',                    
+                'headerOptions' => ['style' => 'width:30%']
+                
+            ],    
+            [
                 'attribute'=>'date_create',
                 'headerOptions' => ['style' => 'width:10%']
             ],
             [
-                'attribute'=>'trans_code',
+                //'attribute'=>'trans_code',
+                'attribute'=>'t_code',
                 'headerOptions' => ['style' => 'width:5%']
             ],
             [
@@ -55,10 +65,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['style' => 'width:5%']
             ],
             //'item_id',
-            [
-                'attribute'=>'itemcode',
-                'headerOptions' => ['style' => 'width:10%']
-            ],
+               
             //'item_name',
             [
                 'attribute'=>'projectsub_number_id',
@@ -69,11 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //  'value'=>'projectsub.projectsub_dscription',
             //],
             
-            [
-                'attribute'=>'item_name',                    
-                'headerOptions' => ['style' => 'width:30%']
-                
-            ],       
+            
 
             [
                 'class' => 'yii\grid\ActionColumn',

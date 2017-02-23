@@ -27,7 +27,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
+            'itemcode',
+            'item_name',
+            'receive',
+            'issued', 
+            'saldo', 
             //'id',
             //'date_create',
             //'trans_code',
@@ -38,8 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'from_to',
             //'grpo_number',
             //'item_id',
-            'itemcode',
-            'item_name',
+            
             //'projectsub_id',
             //[
             //  'attribute'=> 'projectsub_id',
@@ -57,12 +60,10 @@ $this->params['breadcrumbs'][] = $this->title;
             //    'attribute'=>'projectsub.project.project_number',
             //],
             //'projectsub_dscription',
-            'receive',
-            'issued', 
-            'saldo', 
+            
             
 
-            ['class' => 'yii\grid\ActionColumn'],
+            //['class' => 'yii\grid\ActionColumn', 'template' => '{}'],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
