@@ -55,7 +55,8 @@ class TransWhSearch extends TransWh
             ->alias('a')
             ->with('projectsub', 'item')
             ->innerJoin('projectsub as b', 'b.id = a.projectsub_id')
-            ->innerJoin('item as c', 'c.id = a.item_id')->orderBy('a.date_create');
+            ->innerJoin('item as c', 'c.id = a.item_id');
+            //->orderBy('a.date_create');
 
         // add conditions that should always apply here
 

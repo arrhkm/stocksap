@@ -47,7 +47,7 @@ class TransWh extends \yii\db\ActiveRecord
     {
         return [
             [['date_create'], 'safe'],
-            [['trans_code', 'trans_qty'], 'required'],
+            [['trans_code', 'trans_qty', 'projectsub_id', 'item_id'], 'required'],
             [['trans_code', 'trans_qty', 'item_id', 'projectsub_id', 'receive'], 'integer'],
             [['po_number', 'grpo_number', 'projectsub_dscription', 'itemcode'], 'string', 'max' => 50],
             [['location', 'name_user_take', 'from_to'], 'string', 'max' => 225],
@@ -64,15 +64,19 @@ class TransWh extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'date_create' => Yii::t('app', 'Date Create'),
-            'trans_code' => Yii::t('app', 'Trans Code'),
-            'trans_qty' => Yii::t('app', 'Trans Qty'),
+            'trans_code' => Yii::t('app', 'Transaction'),
+            'trans_qty' => Yii::t('app', 'Quantity'),
             'po_number' => Yii::t('app', 'PO./BBM/S.JLN'),
             'location' => Yii::t('app', 'Location'),
             'name_user_take' => Yii::t('app', 'Name User Take'),
-            'from_to' => Yii::t('app', 'From To'),
-            'grpo_number' => Yii::t('app', 'Grpo Number'),
+            'from_to' => Yii::t('app', 'Supplier'),
+            'grpo_number' => Yii::t('app', 'No. GRPO'),
             'item_id' => Yii::t('app', 'Item Barang'),
             'projectsub_id' => Yii::t('app', 'Project/SO.'),
+            'receive'=>Yii::t('app', 'In'),
+            'issued'=>Yii::t('app', 'Out'),
+            't_code'=>Yii::t('app', 'Transaksi'),
+            'projectsub_number_id' => Yii::t('app', 'No. S.O-Fase.'),
         ];
     }
 

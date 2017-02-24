@@ -47,7 +47,11 @@ use kartik\widgets\Select2;
     <?php //= $form->field($model, 'projectsub_id')->textInput() ?>
     <?= $form->field($model, 'projectsub_id')->widget(Select2::className(),[
         'data'=>$projectsub,
-        
+        'size' => Select2::SMALL,
+        'options' => ['placeholder' => 'Select a Project  ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
     ]) ?>
     
     <?= $form->field($model, 'po_number')->textInput(['maxlength' => true]) ?>

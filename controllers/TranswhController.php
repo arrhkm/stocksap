@@ -97,7 +97,7 @@ class TranswhController extends Controller
         $model->date_create = date('Y-m-d');
         if ($model->load(Yii::$app->request->post())) {
             if ($this->saldoEmpty($model->item_id, $model->trans_qty, $model->trans_code)){
-                $model->addError('trans_qty', 'Quantity item  is not already (Saldo < Quantity issued) !');
+                $model->addError('trans_qty', 'Quantity item  is not already, this saldo('.$this->getSaldo($model->item_id, $model->trans_qty).') < Quantity issued!');
                 //yii::$app->session->setFlash('error', 'Leave Entitlement for this user already input');
                 return $this->render('create', [
                     'model' => $model,
@@ -201,5 +201,17 @@ class TranswhController extends Controller
         } 
         return false;
         
+    }
+    public function getSaldo($item_id, $qty){
+        $tWh = TransWh::find()
+            ->alias('a')
+            ->select([
+                'saldo'=>'sum(if(a.trans_code=1, a.trans_qty, 0)) - sum(if(a.trans_code=2,a.trans_qty,0))'                    
+                ,'a.trans_code'
+                ,'a.trans_qty'
+            ])
+            ->where(['a.item_id'=>$item_id])
+            ->groupBy('a.item_id')->one();
+        return $tWh->saldo;
     }
 }
