@@ -89,11 +89,14 @@ class TranswhController extends Controller
     {
         $model = new TransWh();
         
-        $projectsub = ArrayHelper::map(Projectsub::find()->from('projectsub as a')
-                ->innerJoin('project as b', 'b.id = a.project_id')->all(), 'id', 'projectsub_number_id');
+        $items = ArrayHelper::map(Item::find()->select(['id', 'item_name'=>'concat(itemcode,"-",item_name)'])->all(), 'id', 'item_name');
+        $projectsub = ArrayHelper::map(Projectsub::find()
+            ->from('projectsub as a')
+            ->select(['a.id','projectsub_number_id'=>'concat(a.projectsub_number_id," - ", b.project_dscription)'])
+            ->innerJoin('project as b', 'b.id = a.project_id')->all(), 'id', 'projectsub_number_id');
         
         $list_transcode = arrayHelper::map(Transcode::find()->all(), 'id', 'transcode_name');
-        $items = ArrayHelper::map(Item::find()->all(), 'id', 'item_name');
+        
         $model->date_create = date('Y-m-d');
         if ($model->load(Yii::$app->request->post())) {
             if ($this->saldoEmpty($model->item_id, $model->trans_qty, $model->trans_code)){
@@ -128,16 +131,16 @@ class TranswhController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($id);        
         
-        
+        $items = ArrayHelper::map(Item::find()->select(['id', 'item_name'=>'concat(itemcode,"-",item_name)'])->all(), 'id', 'item_name');
         $projectsub = ArrayHelper::map(Projectsub::find()
             ->from('projectsub as a')
-            ->innerJoin('project as b', 'b.id = a.project_id')
-            ->all(), 'id', 'projectsub_number_id');
+            ->select(['a.id','projectsub_number_id'=>'concat(a.projectsub_number_id," - ", b.project_dscription)'])
+            ->innerJoin('project as b', 'b.id = a.project_id')->all(), 'id', 'projectsub_number_id');
         
         $list_transcode = arrayHelper::map(Transcode::find()->all(), 'id', 'transcode_name');
-        $items = ArrayHelper::map(Item::find()->all(), 'id', 'item_name');
+        
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
