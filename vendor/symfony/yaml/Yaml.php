@@ -31,11 +31,6 @@ class Yaml
     const PARSE_CONSTANT = 256;
 
     /**
-     * @experimental in version 3.3
-     */
-    const PARSE_CUSTOM_TAGS = 512;
-
-    /**
      * Parses YAML into a PHP value.
      *
      *  Usage:

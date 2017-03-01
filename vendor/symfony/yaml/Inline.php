@@ -13,7 +13,6 @@ namespace Symfony\Component\Yaml;
 
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Exception\DumpException;
-use Symfony\Component\Yaml\Tag\TaggedValue;
 
 /**
  * Inline implements a YAML parser/dumper for the YAML inline syntax.
@@ -95,8 +94,7 @@ class Inline
         }
 
         $i = 0;
-        $tag = self::parseTag($value, $i, $flags);
-        switch ($value[$i]) {
+        switch ($value[0]) {
             case '[':
                 $result = self::parseSequence($value, $flags, $i, $references);
                 ++$i;
@@ -106,11 +104,7 @@ class Inline
                 ++$i;
                 break;
             default:
-                $result = self::parseScalar($value, $flags, null, $i, null === $tag, $references);
-        }
-
-        if (null !== $tag) {
-            return new TaggedValue($tag, $result);
+                $result = self::parseScalar($value, $flags, null, array('"', "'"), $i, true, $references);
         }
 
         // some comments are allowed at the end
@@ -165,10 +159,6 @@ class Inline
             case $value instanceof \DateTimeInterface:
                 return $value->format('c');
             case is_object($value):
-                if ($value instanceof TaggedValue) {
-                    return '!'.$value->getTag().' '.self::dump($value->getValue(), $flags);
-                }
-
                 if (Yaml::DUMP_OBJECT & $flags) {
                     return '!php/object:'.serialize($value);
                 }
@@ -286,6 +276,7 @@ class Inline
      * @param string $scalar
      * @param int    $flags
      * @param string $delimiters
+     * @param array  $stringDelimiters
      * @param int    &$i
      * @param bool   $evaluate
      * @param array  $references
@@ -296,9 +287,9 @@ class Inline
      *
      * @internal
      */
-    public static function parseScalar($scalar, $flags = 0, $delimiters = null, &$i = 0, $evaluate = true, $references = array())
+    public static function parseScalar($scalar, $flags = 0, $delimiters = null, $stringDelimiters = array('"', "'"), &$i = 0, $evaluate = true, $references = array())
     {
-        if (in_array($scalar[$i], array('"', "'"))) {
+        if (in_array($scalar[$i], $stringDelimiters)) {
             // quoted scalar
             $output = self::parseQuotedScalar($scalar, $i);
 
@@ -392,28 +383,23 @@ class Inline
 
         // [foo, bar, ...]
         while ($i < $len) {
-            if (']' === $sequence[$i]) {
-                return $output;
-            }
-            if (',' === $sequence[$i] || ' ' === $sequence[$i]) {
-                ++$i;
-
-                continue;
-            }
-
-            $tag = self::parseTag($sequence, $i, $flags);
             switch ($sequence[$i]) {
                 case '[':
                     // nested sequence
-                    $value = self::parseSequence($sequence, $flags, $i, $references);
+                    $output[] = self::parseSequence($sequence, $flags, $i, $references);
                     break;
                 case '{':
                     // nested mapping
-                    $value = self::parseMapping($sequence, $flags, $i, $references);
+                    $output[] = self::parseMapping($sequence, $flags, $i, $references);
+                    break;
+                case ']':
+                    return $output;
+                case ',':
+                case ' ':
                     break;
                 default:
                     $isQuoted = in_array($sequence[$i], array('"', "'"));
-                    $value = self::parseScalar($sequence, $flags, array(',', ']'), $i, null === $tag, $references);
+                    $value = self::parseScalar($sequence, $flags, array(',', ']'), array('"', "'"), $i, true, $references);
 
                     // the value can be an array if a reference has been resolved to an array var
                     if (is_string($value) && !$isQuoted && false !== strpos($value, ': ')) {
@@ -426,14 +412,10 @@ class Inline
                         }
                     }
 
+                    $output[] = $value;
+
                     --$i;
             }
-
-            if (null !== $tag) {
-                $value = new TaggedValue($tag, $value);
-            }
-
-            $output[] = $value;
 
             ++$i;
         }
@@ -475,7 +457,7 @@ class Inline
             }
 
             // key
-            $key = self::parseScalar($mapping, $flags, array(':', ' '), $i, false);
+            $key = self::parseScalar($mapping, $flags, array(':', ' '), array('"', "'"), $i, false);
 
             if (false === $i = strpos($mapping, ':', $i)) {
                 break;
@@ -485,15 +467,10 @@ class Inline
                 @trigger_error('Using a colon that is not followed by an indication character (i.e. " ", ",", "[", "]", "{", "}" is deprecated since version 3.2 and will throw a ParseException in 4.0.', E_USER_DEPRECATED);
             }
 
+            // value
+            $done = false;
+
             while ($i < $len) {
-                if (':' === $mapping[$i] || ' ' === $mapping[$i]) {
-                    ++$i;
-
-                    continue;
-                }
-
-                $tag = self::parseTag($mapping, $i, $flags);
-                $duplicate = false;
                 switch ($mapping[$i]) {
                     case '[':
                         // nested sequence
@@ -501,10 +478,12 @@ class Inline
                         // Spec: Keys MUST be unique; first one wins.
                         // Parser cannot abort this mapping earlier, since lines
                         // are processed sequentially.
-                        if (isset($output[$key])) {
+                        if (!isset($output[$key])) {
+                            $output[$key] = $value;
+                        } else {
                             @trigger_error(sprintf('Duplicate key "%s" detected on line %d whilst parsing YAML. Silent handling of duplicate mapping keys in YAML is deprecated since version 3.2 and will throw \Symfony\Component\Yaml\Exception\ParseException in 4.0.', $key, self::$parsedLineNumber + 1), E_USER_DEPRECATED);
-                            $duplicate = true;
                         }
+                        $done = true;
                         break;
                     case '{':
                         // nested mapping
@@ -512,33 +491,35 @@ class Inline
                         // Spec: Keys MUST be unique; first one wins.
                         // Parser cannot abort this mapping earlier, since lines
                         // are processed sequentially.
-                        if (isset($output[$key])) {
+                        if (!isset($output[$key])) {
+                            $output[$key] = $value;
+                        } else {
                             @trigger_error(sprintf('Duplicate key "%s" detected on line %d whilst parsing YAML. Silent handling of duplicate mapping keys in YAML is deprecated since version 3.2 and will throw \Symfony\Component\Yaml\Exception\ParseException in 4.0.', $key, self::$parsedLineNumber + 1), E_USER_DEPRECATED);
-                            $duplicate = true;
                         }
+                        $done = true;
+                        break;
+                    case ':':
+                    case ' ':
                         break;
                     default:
-                        $value = self::parseScalar($mapping, $flags, array(',', '}'), $i, null === $tag, $references);
+                        $value = self::parseScalar($mapping, $flags, array(',', '}'), array('"', "'"), $i, true, $references);
                         // Spec: Keys MUST be unique; first one wins.
                         // Parser cannot abort this mapping earlier, since lines
                         // are processed sequentially.
-                        if (isset($output[$key])) {
+                        if (!isset($output[$key])) {
+                            $output[$key] = $value;
+                        } else {
                             @trigger_error(sprintf('Duplicate key "%s" detected on line %d whilst parsing YAML. Silent handling of duplicate mapping keys in YAML is deprecated since version 3.2 and will throw \Symfony\Component\Yaml\Exception\ParseException in 4.0.', $key, self::$parsedLineNumber + 1), E_USER_DEPRECATED);
-                            $duplicate = true;
                         }
+                        $done = true;
                         --$i;
                 }
 
-                if (!$duplicate) {
-                    if (null !== $tag) {
-                        $output[$key] = new TaggedValue($tag, $value);
-                    } else {
-                        $output[$key] = $value;
-                    }
-                }
                 ++$i;
 
-                continue 2;
+                if ($done) {
+                    continue 2;
+                }
             }
         }
 
@@ -589,7 +570,8 @@ class Inline
                 return true;
             case 'false' === $scalarLower:
                 return false;
-            case $scalar[0] === '!':
+            // Optimise for returning strings.
+            case $scalar[0] === '+' || $scalar[0] === '-' || $scalar[0] === '.' || $scalar[0] === '!' || is_numeric($scalar[0]):
                 switch (true) {
                     case 0 === strpos($scalar, '!str'):
                         return (string) substr($scalar, 5);
@@ -632,15 +614,6 @@ class Inline
                         return;
                     case 0 === strpos($scalar, '!!float '):
                         return (float) substr($scalar, 8);
-                    case 0 === strpos($scalar, '!!binary '):
-                        return self::evaluateBinaryScalar(substr($scalar, 9));
-                    default:
-                        @trigger_error(sprintf('Using the unquoted scalar value "%s" is deprecated since version 3.3 and will be considered as a tagged value in 4.0. You must quote it.', $scalar), E_USER_DEPRECATED);
-                }
-
-            // Optimize for returning strings.
-            case $scalar[0] === '+' || $scalar[0] === '-' || $scalar[0] === '.' || is_numeric($scalar[0]):
-                switch (true) {
                     case preg_match('{^[+-]?[0-9][0-9_]*$}', $scalar):
                         $scalar = str_replace('_', '', (string) $scalar);
                         // omitting the break / return as integers are handled in the next case
@@ -664,6 +637,8 @@ class Inline
                         return -log(0);
                     case '-.inf' === $scalarLower:
                         return log(0);
+                    case 0 === strpos($scalar, '!!binary '):
+                        return self::evaluateBinaryScalar(substr($scalar, 9));
                     case preg_match('/^(-|\+)?[0-9][0-9,]*(\.[0-9_]+)?$/', $scalar):
                     case preg_match('/^(-|\+)?[0-9][0-9_]*(\.[0-9_]+)?$/', $scalar):
                         if (false !== strpos($scalar, ',')) {
@@ -684,48 +659,9 @@ class Inline
 
                         return $time;
                 }
+            default:
+                return (string) $scalar;
         }
-
-        return (string) $scalar;
-    }
-
-    /**
-     * @param string $value
-     * @param int    &$i
-     * @param int    $flags
-     *
-     * @return null|string
-     */
-    private static function parseTag($value, &$i, $flags)
-    {
-        if ('!' !== $value[$i]) {
-            return;
-        }
-
-        $tagLength = strcspn($value, " \t\n", $i + 1);
-        $tag = substr($value, $i + 1, $tagLength);
-
-        $nextOffset = $i + $tagLength + 1;
-        $nextOffset += strspn($value, ' ', $nextOffset);
-
-        // Is followed by a scalar
-        if (!isset($value[$nextOffset]) || !in_array($value[$nextOffset], array('[', '{'), true)) {
-            // Manage scalars in {@link self::evaluateScalar()}
-            return;
-        }
-
-        // Built-in tags
-        if ($tag && '!' === $tag[0]) {
-            throw new ParseException(sprintf('The built-in tag "!%s" is not implemented.', $tag));
-        }
-
-        if (Yaml::PARSE_CUSTOM_TAGS & $flags) {
-            $i = $nextOffset;
-
-            return $tag;
-        }
-
-        throw new ParseException(sprintf('Tags support is not enabled. Enable the `Yaml::PARSE_CUSTOM_TAGS` flag to use "!%s".', $tag));
     }
 
     /**

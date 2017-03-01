@@ -29,6 +29,8 @@ use kartik\widgets\Select2;
             'pluginOptions' => [
                 'allowClear' => true
             ],
+            'pluginLoading'=>true,
+            
     ]);?>
 
     <?= $form->field($model, 'trans_qty')->textInput() ?>

@@ -54,18 +54,16 @@ class Glob
         $sizeGlob = strlen($glob);
         for ($i = 0; $i < $sizeGlob; ++$i) {
             $car = $glob[$i];
-            if ($firstByte && $strictLeadingDot && '.' !== $car) {
-                $regex .= '(?=[^\.])';
+            if ($firstByte) {
+                if ($strictLeadingDot && '.' !== $car) {
+                    $regex .= '(?=[^\.])';
+                }
+
+                $firstByte = false;
             }
 
-            $firstByte = '/' === $car;
-
-            if ($firstByte && $strictWildcardSlash && isset($glob[$i + 3]) && '**/' === $glob[$i + 1].$glob[$i + 2].$glob[$i + 3]) {
-                $car = $strictLeadingDot ? '/(?:(?=[^\.])[^/]++/)*' : '/(?:[^/]++/)*';
-                $i += 3;
-                if ('/' === $delimiter) {
-                    $car = str_replace('/', '\\/', $car);
-                }
+            if ('/' === $car) {
+                $firstByte = true;
             }
 
             if ($delimiter === $car || '.' === $car || '(' === $car || ')' === $car || '|' === $car || '+' === $car || '^' === $car || '$' === $car) {

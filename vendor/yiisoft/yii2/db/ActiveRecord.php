@@ -288,7 +288,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return int the number of rows deleted
      */
-    public static function deleteAll($condition = null, $params = [])
+    public static function deleteAll($condition = '', $params = [])
     {
         $command = static::getDb()->createCommand();
         $command->delete(static::tableName(), $condition, $params);

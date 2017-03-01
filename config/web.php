@@ -7,6 +7,47 @@ $config = [
     'name'=>'WH Stock Record',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'modules'=>[
+        'admin'=>[
+            'class'=>'mdm\admin\Module',
+            'layout' => 'left-menu',
+            'mainLayout' => '@app/views/layouts/main.php',
+            
+            /*'controllerMap' => [
+                'assignment' => [
+                    'class' => 'mdm\admin\controllers\AssignmentController',
+                    'userClassName' => 'app\models\User', 
+                    'idField' => 'user_id',
+                    'usernameField' => 'username',
+                    'fullnameField' => 'profile.full_name',
+                    'extraColumns' => [
+                        [
+                            'attribute' => 'full_name',
+                            'label' => 'Full Name',
+                            'value' => function($model, $key, $index, $column) {
+                                return $model->profile->full_name;
+                            },
+                        ],
+                        [
+                            'attribute' => 'dept_name',
+                            'label' => 'Department',
+                            'value' => function($model, $key, $index, $column) {
+                                return $model->profile->dept->name;
+                            },
+                        ],
+                        [
+                            'attribute' => 'post_name',
+                            'label' => 'Post',
+                            'value' => function($model, $key, $index, $column) {
+                                return $model->profile->post->name;
+                            },
+                        ],
+                    ],
+                    'searchClass' => 'app\models\UserSearch'
+                ],
+            ],*/
+        ],
+    ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -15,9 +56,14 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'user' => [
+        
+        /*'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
+        ],*/
+        'user' => [
+            'identityClass' => 'mdm\admin\models\User',
+            'loginUrl' => ['admin/user/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -47,6 +93,20 @@ $config = [
             ],
         ],
         */
+        'authManager' => [
+            'class'=>'yii\rbac\DbManager', //'class' => 'yii\rbac\PhpManager', // or use
+            //'defaultRoles' => ['role_admin']
+        ]
+        
+    ],
+    'as access'=>[
+        'class'=>'mdm\admin\components\AccessControl',
+        'allowActions'=>[
+            //'*',
+            'admin/user/login',
+            'admin/user/signup',
+            //'admin/*'
+        ],
     ],
     'params' => $params,
 ];

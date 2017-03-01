@@ -530,6 +530,9 @@ class ErrorHandler
                 }
             } elseif ($exception instanceof \ErrorException) {
                 $message = 'Uncaught '.$exception->getMessage();
+                if ($exception instanceof ContextErrorException) {
+                    $e['context'] = $exception->getContext();
+                }
             } else {
                 $message = 'Uncaught Exception: '.$exception->getMessage();
             }

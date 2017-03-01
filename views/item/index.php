@@ -28,12 +28,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute'=>'id',
-                'headerOptions'=>'stayle'=>['']
+                'headerOptions'=>['style'=>'width:1%']
             ],
-            'itemcode',
-            'item_name:ntext',
+            [
+                'attribute'=>'itemcode',
+                'headerOptions' => ['style' => 'width:10%']
+            ],
+            [
+                'attribute'=>'item_name',
+                'headerOptions'=>['style'=>'width:70%']
+            ],
+            //'itemcode',
+            //'item_name:ntext',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update} {delete}'],
+            
+             
         ],
     ]); ?>
     <?php Pjax::end(); ?>

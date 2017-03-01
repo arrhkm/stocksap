@@ -89,7 +89,7 @@ class TranswhController extends Controller
     {
         $model = new TransWh();
         
-        $items = ArrayHelper::map(Item::find()->select(['id', 'item_name'=>'concat(itemcode,"-",item_name)'])->all(), 'id', 'item_name');
+        $items = ArrayHelper::map(Item::find()->select(['id', 'item_name'])->all(), 'id', 'item_name');
         $projectsub = ArrayHelper::map(Projectsub::find()
             ->from('projectsub as a')
             ->select(['a.id','projectsub_number_id'=>'concat(a.projectsub_number_id," - ", b.project_dscription)'])
