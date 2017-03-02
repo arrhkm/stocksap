@@ -53,10 +53,21 @@ $config = [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'hakam',
         ],
+        //'cache' => [
+        //    'class' => 'yii\caching\FileCache',
+            
+        //],
         'cache' => [
-            'class' => 'yii\caching\FileCache',
+            'class' => 'yii\caching\MemCache',
+            'servers' => [
+                [
+                    'host' => 'localhost', // sesuaikan dengan server kamu
+                    'port' => 11211, // default port
+                    'weight' => 20// saya gagal faham disini
+                ],
+            ], 
         ],
-        
+
         /*'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,

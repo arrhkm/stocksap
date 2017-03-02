@@ -15,6 +15,7 @@ use app\models\Projectsub;
 use yii\helpers\ArrayHelper;
 use app\models\TransWhSearchByItemcode;
 
+
 /**
  * TranswhController implements the CRUD actions for TransWh model.
  */
@@ -88,12 +89,21 @@ class TranswhController extends Controller
     public function actionCreate()
     {
         $model = new TransWh();
+        $db = Yii::$app->db;// or Category::getDb()
+        $myItems = $db->cache(function ($db){
+            return Item::find()->select(['id', 'item_name'])->all();
+        }, 360);
+        //$myItems = Item::find()->select(['id', 'item_name'])->all();
+        //$items = ArrayHelper::map(Item::find()->select(['id', 'item_name'])->all(), 'id', 'item_name');
+        $items = ArrayHelper::map($myItems, 'id', 'item_name');
         
-        $items = ArrayHelper::map(Item::find()->select(['id', 'item_name'])->all(), 'id', 'item_name');
-        $projectsub = ArrayHelper::map(Projectsub::find()
+        $listProjects = $db->cache(function($db){ 
+                return Projectsub::find()
             ->from('projectsub as a')
             ->select(['a.id','projectsub_number_id'=>'concat(a.projectsub_number_id," - ", b.project_dscription)'])
-            ->innerJoin('project as b', 'b.id = a.project_id')->all(), 'id', 'projectsub_number_id');
+            ->innerJoin('project as b', 'b.id = a.project_id')->all();
+        }, 360);
+        $projectsub = ArrayHelper::map($listProjects, 'id', 'projectsub_number_id');
         
         $list_transcode = arrayHelper::map(Transcode::find()->all(), 'id', 'transcode_name');
         
