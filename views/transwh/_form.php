@@ -16,6 +16,16 @@ use kartik\widgets\Select2;
 
     <?php $form = ActiveForm::begin(); ?>
 
+    <?= $form->field($model, 'item_id')->widget(\kartik\select2\Select2::className(), [
+        'name'=>'item',
+        'data'=>$items,
+        'size' => Select2::SMALL,
+        'options' => ['placeholder' => 'Select a Item  ...'],
+        'pluginOptions' => [
+            'allowClear' => true
+        ],
+    ])?>
+    
     <?= $form->field($model, 'date_create')->textInput() ?>
 
     <?php //= $form->field($model, 'trans_code')->textInput() ?>
@@ -36,15 +46,7 @@ use kartik\widgets\Select2;
     <?= $form->field($model, 'trans_qty')->textInput() ?>
 
     <?php //= $form->field($model, 'item_id')->textInput() ?>
-    <?= $form->field($model, 'item_id')->widget(\kartik\select2\Select2::className(), [
-        'name'=>'item',
-        'data'=>$items,
-        'size' => Select2::SMALL,
-        'options' => ['placeholder' => 'Select a Item  ...'],
-        'pluginOptions' => [
-            'allowClear' => true
-        ],
-    ])?>
+    
 
     <?php //= $form->field($model, 'projectsub_id')->textInput() ?>
     <?= $form->field($model, 'projectsub_id')->widget(Select2::className(),[
@@ -66,6 +68,7 @@ use kartik\widgets\Select2;
 
     <?= $form->field($model, 'grpo_number')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'pr_number')->textInput(['maxlength' => true]) ?>
     
 
     <div class="form-group">

@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 
 use app\models\Transcode;
 use app\models\Item;
+use app\models\ItemSearch;
 use app\models\Projectsub;
 use yii\helpers\ArrayHelper;
 use app\models\TransWhSearchByItemcode;
@@ -89,9 +90,16 @@ class TranswhController extends Controller
     public function actionCreate()
     {
         $model = new TransWh();
+        
+        
+        $tes= Yii::$app->request->get('item_id');
+        if (isset($tes)){
+            //$model->addError('item_id', 'berhasil dideteksi');
+            $model->item_id = $tes;
+        }     
         $db = Yii::$app->db;// or Category::getDb()
         $myItems = $db->cache(function ($db){
-            return Item::find()->select(['id', 'item_name'])->all();
+            return Item::find()->select(['id', 'item_name'=>'concat(itemcode, " - ", item_name)'])->all();
         }, 360);
         //$myItems = Item::find()->select(['id', 'item_name'])->all();
         //$items = ArrayHelper::map(Item::find()->select(['id', 'item_name'])->all(), 'id', 'item_name');
@@ -174,6 +182,16 @@ class TranswhController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+    
+    public function actionSelectitem(){
+        $searchModel = new ItemSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('_selectitem', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);     
     }
 
     /**

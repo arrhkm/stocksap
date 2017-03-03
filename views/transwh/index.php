@@ -17,7 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Trans Wh'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?php //= Html::a(Yii::t('app', 'Create Trans Wh'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Create Trans Wh'), ['selectitem'], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Yii::t('app', 'View By Itemcode'), ['index2'], ['class' => 'btn btn-success']) ?>
     </p>
 
@@ -62,6 +63,10 @@ $this->params['breadcrumbs'][] = $this->title;
             //'from_to',
             [
                 'attribute'=>'grpo_number',
+                'headerOptions' => ['style' => 'width:5%']
+            ],            
+            [
+                'attribute'=>'pr_number',
                 'headerOptions' => ['style' => 'width:5%']
             ],
             //'item_id',

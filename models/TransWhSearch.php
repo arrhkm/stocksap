@@ -21,7 +21,7 @@ class TransWhSearch extends TransWh
     public function rules()
     {
         return [
-            [['id', 'trans_code', 'trans_qty', 'item_id', 'projectsub_id'], 'integer'],           
+            [['id', 'trans_code', 'trans_qty', 'item_id', 'projectsub_id', 'pr_number'], 'integer'],           
             [['date_create', 'po_number', 'location', 
                 'name_user_take', 'from_to', 'grpo_number', 'itemcode', 'item_name', 'projectsub_number_id', 't_code'], 'safe'],
             [['projectsub_dscription'],'string'],

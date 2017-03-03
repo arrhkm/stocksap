@@ -22,7 +22,7 @@ class TransWhSearchByItemcode extends TransWh
     public function rules()
     {
         return [
-            [['id', 'trans_code', 'trans_qty', 'item_id', 'projectsub_id'], 'integer'],           
+            [['id', 'trans_code', 'trans_qty', 'item_id', 'projectsub_id', 'pr_number'], 'integer'],           
             [['date_create', 'po_number', 'location', 
                 'name_user_take', 'from_to', 'grpo_number', 'item_name', 'itemcode'], 'safe'],
             [['projectsub_dscription'],'string'],
@@ -52,7 +52,8 @@ class TransWhSearchByItemcode extends TransWh
                 , 'issued' => 'sum(if(a.trans_code=2, a.trans_qty, 0))'                
                 , 'saldo' => 'sum(if(a.trans_code=1, a.trans_qty, 0))-sum(if(a.trans_code=2, a.trans_qty, 0))'
                 , 'item_name'
-                , 'item_id',
+                , 'item_id'
+                
             ])
             ->alias('a')
             ->with('item')            

@@ -17,7 +17,8 @@ use Yii;
  * @property string $from_to
  * @property string $grpo_number
  * @property int $item_id
- * @property int $projectsub_id
+ * @property int $projectsub_id 
+ * @property int $pr_number
  *
  * @property Item $item
  * @property Projectsub $projectsub
@@ -48,7 +49,7 @@ class TransWh extends \yii\db\ActiveRecord
         return [
             [['date_create'], 'safe'],
             [['trans_code', 'trans_qty', 'projectsub_id', 'item_id'], 'required'],
-            [['trans_code', 'trans_qty', 'item_id', 'projectsub_id', 'receive'], 'integer'],
+            [['trans_code', 'trans_qty', 'item_id', 'projectsub_id', 'receive', 'pr_number'], 'integer'],
             [['po_number', 'grpo_number', 'projectsub_dscription', 'itemcode'], 'string', 'max' => 50],
             [['location', 'name_user_take', 'from_to'], 'string', 'max' => 225],
             [['item_id'], 'exist', 'skipOnError' => true, 'targetClass' => Item::className(), 'targetAttribute' => ['item_id' => 'id']],
@@ -77,6 +78,7 @@ class TransWh extends \yii\db\ActiveRecord
             'issued'=>Yii::t('app', 'Out'),
             't_code'=>Yii::t('app', 'Transaksi'),
             'projectsub_number_id' => Yii::t('app', 'No. S.O-Fase.'),
+            'pr_number'=>Yii::t('app', 'No. Purchase Request'),
         ];
     }
 

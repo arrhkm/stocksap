@@ -27,6 +27,8 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'trans_qty') ?>
 
     <?= $form->field($model, 'po_number') ?>
+    
+    <?php //= $form->field($model, 'pr_number') ?>
 
     <?php // echo $form->field($model, 'location') ?>
 
