@@ -57,13 +57,14 @@ $config = [
         //    'class' => 'yii\caching\FileCache',
             
         //],
+        //belum bisa di PHP7.0 di PHP5 sukses 
         'cache' => [
             'class' => 'yii\caching\MemCache',
             'servers' => [
                 [
                     'host' => 'localhost', // sesuaikan dengan server kamu
                     'port' => 11211, // default port
-                    'weight' => 20// saya gagal faham disini
+                    'weight' => 60// saya gagal faham disini
                 ],
             ], 
         ],

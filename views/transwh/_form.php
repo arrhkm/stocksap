@@ -5,6 +5,9 @@ use yii\widgets\ActiveForm;
 
 use yii\helpers\ArrayHelper;
 use kartik\widgets\Select2;
+use yii\web\JsExpression;
+use yii\jui\AutoComplete;
+use yii\helpers\Url;
 
 
 /* @var $this yii\web\View */
@@ -15,6 +18,46 @@ use kartik\widgets\Select2;
 <div class="trans-wh-form">
 
     <?php $form = ActiveForm::begin(); ?>
+
+    <?php /* echo AutoComplete::widget([
+       'model' => $model,
+       //'attribute' => 'country',
+       'clientOptions' => [
+           'source' => Url::toRoute(['transwh/ajax-kurir']),
+           'minLength'=> 1,
+           'autoFill'=>true,
+        'select' => new JsExpression(
+        "function( event, ui ) {
+        console.log(ui.item.id);
+                       
+                   }"
+               )
+       ],
+       'options' => [
+               'class' => 'form-control'
+           ]
+    ]); */?>
+
+    <?php 
+/*
+    echo AutoComplete::widget([
+       'model' => $model,
+       'attribute' => 'item',
+       'clientOptions' => [
+           'source' => Url::toRoute(['transwh/ajax-itemcode']),
+           'minLength'=> 1,
+           'autoFill'=>true,
+        'select' => new JsExpression(
+        "function( event, ui ) {
+        console.log(ui.item.id);
+                       
+                   }"
+               )
+       ],
+       'options' => [
+               'class' => 'form-control'
+           ]
+    ]);*/?>
 
     <?= $form->field($model, 'item_id')->widget(\kartik\select2\Select2::className(), [
         'name'=>'item',
@@ -42,6 +85,8 @@ use kartik\widgets\Select2;
             'pluginLoading'=>true,
             
     ]);?>
+
+    
 
     <?= $form->field($model, 'trans_qty')->textInput() ?>
 
@@ -78,3 +123,5 @@ use kartik\widgets\Select2;
     <?php ActiveForm::end(); ?>
 
 </div>
+
+

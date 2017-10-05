@@ -98,11 +98,13 @@ class TranswhController extends Controller
             $model->item_id = $tes;
         }     
         $db = Yii::$app->db;// or Category::getDb()
+        
         $myItems = $db->cache(function ($db){
             return Item::find()->select(['id', 'item_name'=>'concat(itemcode, " - ", item_name)'])->all();
         }, 360);
-        //$myItems = Item::find()->select(['id', 'item_name'])->all();
-        //$items = ArrayHelper::map(Item::find()->select(['id', 'item_name'])->all(), 'id', 'item_name');
+        
+        // tanpa memcached // $myItems =Item::find()->select(['id', 'item_name'=>'concat(itemcode, " - ", item_name)'])->all();
+                
         $items = ArrayHelper::map($myItems, 'id', 'item_name');
         
         $listProjects = $db->cache(function($db){ 
@@ -221,10 +223,11 @@ class TranswhController extends Controller
                 ,'a.trans_qty'
             ])
             ->where(['a.item_id'=>$item_id])
-            ->groupBy('a.item_id')->one();
-            
-            if ($tWh->saldo < $qty){
-                return true;
+            ->groupBy(['a.item_id', 'a.id'])->one();
+            if (isset($tWh)){
+                if ($tWh->saldo < $qty){
+                    return true;
+                }
             }
             return false;
             
@@ -245,4 +248,25 @@ class TranswhController extends Controller
             ->groupBy('a.item_id')->one();
         return $tWh->saldo;
     }
+
+    public function actionAjaxKurir($term)
+    {
+       $data=array();
+       $row=['id'=>'1','label'=>'satu','value'=>'satu'];
+       $data[]=$row;
+       $row=['id'=>'2','label'=>'dua','value'=>'dua'];
+       $data[]=$row;
+       $row=['id'=>'3','label'=>'Telu','value'=>'3'];
+       $data[]=$row;
+       $row=['id'=>'4','label'=>'dua','value'=>'4'];
+       $data[]=$row;
+       echo json_encode($data);
+   }
+
+    public function actionAjaxItemcode($term)
+    {
+        $myItems =Item::find()->select(['id', 'item_name'=>'concat(itemcode, " - ", item_name)'])->all();
+        echo json_encode($myItems);
+    }
+
 }
