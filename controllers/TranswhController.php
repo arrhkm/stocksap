@@ -15,6 +15,8 @@ use app\models\ItemSearch;
 use app\models\Projectsub;
 use yii\helpers\ArrayHelper;
 use app\models\TransWhSearchByItemcode;
+use app\models\TransHistory;
+use app\models\SelectTrans;
 
 
 /**
@@ -63,6 +65,16 @@ class TranswhController extends Controller
         return $this->render('index2', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+    public function actionTranshistory()
+    {
+        $searchModel = New TransHistory();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('transhistory',[ 
+            'searchModel'=>$searchModel,
+            'dataProvider'=>$dataProvider,
         ]);
     }
 
@@ -141,6 +153,89 @@ class TranswhController extends Controller
                 'items'=> $items,
             ]);
         }
+    }
+
+    public function actionSelecthistory()
+    {
+        $model = new SelectTrans();
+
+        $myItems = Yii::$app->db->cache(function ($db){
+            return Item::find()->select(['id', 'item_name'=>'concat(itemcode, " - ", item_name)'])->all();
+        }, 360);
+        
+        // tanpa memcached // $myItems =Item::find()->select(['id', 'item_name'=>'concat(itemcode, " - ", item_name)'])->all();
+                
+        $items = ArrayHelper::map($myItems, 'id', 'item_name');
+
+         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            // valid data received in $model
+
+            // do something meaningful here about $model ...
+            /*
+            $quesy1 = "
+                SELECT b.itemcode, b.item_name, d.project_number, d.project_dscription
+                , a.id
+                , a.date_create
+                
+                , if(a.trans_code=1, a.trans_qty, 0) as t_in
+                , if(a.trans_code=2, a.trans_qty, 0) as t_out
+                
+                , a.po_number
+                , a.location
+                , a.name_user_take
+                , a.from_to
+                , a.grpo_number
+                , a.item_id
+                , a.projectsub_id
+                , a.pr_number 
+                FROM stocksap.trans_wh a
+                JOIN item b ON (b.id = a.item_id)
+                JOIN projectsub c on (c.id = a.projectsub_id)
+                JOIN project d on (d.id = c.project_id)
+                WHERE a.projectsub_id= 544
+                AND a.date_create between '2017-04-01' AND '2017-04-30'
+
+            ";*/
+            $query1 = (new \Yii\db\Query())
+            ->select([
+                'b.itemcode', 'b.item_name', 'd.project_number', 'd.project_dscription'
+                , 'a.id', 'a.date_create'
+                , 'if(a.trans_code=1, a.trans_qty, 0) as t_in'
+                , 'if(a.trans_code=2, a.trans_qty, 0) as t_out'
+                , 'a.po_number'
+                , 'a.location'
+                , 'a.name_user_take'
+                , 'a.from_to'
+                , 'a.grpo_number'
+                , 'a.item_id'
+                , 'a.projectsub_id'
+                , 'a.pr_number'
+
+            ])->from('stocksap.trans_wh as a')
+            ->join('inner Join', 'item as b', 'b.id=a.item_id')
+            ->join('inner Join', 'projectsub as c', 'c.id=a.projectsub_id')
+            ->join('inner Join', 'project as d', 'd.id=c.project_id')
+            ->where(['between', 'date_create', $model->date1, $model->date2])
+            ->andWhere(['a.item_id'=>$model->itemcode]);
+            //$query1->all();
+            //$dataku =$datacon->createCommand()->$queryku->queryAll();
+            $command = $query1->createCommand();
+            $row = $command->queryAll();
+            return $this->render('selecthistory', [
+                'model' => $model,
+                'row'=>$row,
+                'items'=>$items,
+            ]);
+
+        } else {
+            // either the page is initially displayed or there is some validation error
+            return $this->render('selecthistory', [
+                'model' => $model,
+                'items'=>$items,
+            ]);
+        }
+
+
     }
 
     /**

@@ -39,7 +39,10 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'Transaction WH', 'url' => ['/transwh/index']],
+            ['label' => 'Transaction', 'url' => '#', 'items'=>[
+                ['label' => 'Trans WH', 'url' => ['/transwh/index']],
+                ['label' => 'Trans History', 'url' => ['/transwh/transhistory']],
+            ]],
             ['label' => 'Master Data', 'url' => ['#'], 'items'=>[
                 ['label' => 'Master Item', 'url' => ['/item/']],
                 ['label' => 'Master Project', 'url' => ['/project/']],

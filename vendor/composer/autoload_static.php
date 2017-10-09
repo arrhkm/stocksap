@@ -59,6 +59,10 @@ class ComposerStaticInit31b3367f8ecaf67534fc22a5dffd9e05
             'kartik\\alert\\' => 13,
             'kartik\\affix\\' => 13,
         ),
+        'f' => 
+        array (
+            'fedemotta\\datatables\\' => 21,
+        ),
         'c' => 
         array (
             'cebe\\markdown\\' => 14,
@@ -235,6 +239,10 @@ class ComposerStaticInit31b3367f8ecaf67534fc22a5dffd9e05
         'kartik\\affix\\' => 
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-affix',
+        ),
+        'fedemotta\\datatables\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fedemotta/yii2-widget-datatables',
         ),
         'cebe\\markdown\\' => 
         array (

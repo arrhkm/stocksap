@@ -29,6 +29,8 @@ class TransWh extends \yii\db\ActiveRecord
      * @inheritdoc
      */
     public $projectsub_dscription;
+    public $project_dscription;
+    public $project_number;
     public $receive;
     public $itemcode;
     public $issued;
@@ -74,8 +76,8 @@ class TransWh extends \yii\db\ActiveRecord
             'grpo_number' => Yii::t('app', 'No. GRPO'),
             'item_id' => Yii::t('app', 'Item Barang'),
             'projectsub_id' => Yii::t('app', 'Project/SO.'),
-            'receive'=>Yii::t('app', 'In'),
-            'issued'=>Yii::t('app', 'Out'),
+            'receive'=>Yii::t('app', 'Receive'),
+            'issued'=>Yii::t('app', 'Issued'),
             't_code'=>Yii::t('app', 'Transaksi'),
             'projectsub_number_id' => Yii::t('app', 'No. S.O-Fase.'),
             'pr_number'=>Yii::t('app', 'No. Purchase Request'),

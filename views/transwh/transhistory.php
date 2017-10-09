@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 
-$this->title = Yii::t('app', 'Transaction WH By Itemcode');
+$this->title = Yii::t('app', 'History Transaction');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="trans-wh-index">
@@ -20,6 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?php //= Html::a(Yii::t('app', 'Create Trans Wh'), ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Yii::t('app', 'Back to Transaction'), ['index'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Search Transaction'), ['selecthistory'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([
@@ -29,22 +30,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             'itemcode',
-            'item_name',
+            'date_create',  
+            //'item_name',
+            'project_number', 
+            //'project_dscription',
             'receive',
             'issued', 
-            'saldo', 
-            //'id',
-            //'date_create',
-            //'trans_code',
-            //'trans_qty',
-            //'po_number',
-            //'location',
-            //'name_user_take',
-            //'from_to',
-            //'grpo_number',
-            //'item_id',
+                              
+            'po_number',            
+            'name_user_take',
+            'from_to',
+            'grpo_number',
             
-            //'projectsub_id',
+        
+            
             //[
             //  'attribute'=> 'projectsub_id',
             //  'value'=>'projectsub.projectsub_dscription',

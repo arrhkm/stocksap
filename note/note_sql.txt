@@ -1,0 +1,24 @@
+1. SQL for Transaktion History by date 
+----------------------------------------
+SELECT b.itemcode, b.item_name, d.project_number, d.project_dscription
+, a.id
+, a.date_create
+-- , a.trans_code
+, if(a.trans_code=1, a.trans_qty, 0) as t_in
+, if(a.trans_code=2, a.trans_qty, 0) as t_out
+-- , a.trans_qty
+, a.po_number
+, a.location
+, a.name_user_take
+, a.from_to
+, a.grpo_number
+, a.item_id
+, a.projectsub_id
+, a.pr_number 
+FROM stocksap.trans_wh a
+JOIN item b ON (b.id = a.item_id)
+JOIN projectsub c on (c.id = a.projectsub_id)
+JOIN project d on (d.id = c.project_id)
+WHERE a.projectsub_id= 544
+AND a.date_create between '2017-04-01' AND '2017-04-30'
+-----------------------------------------
